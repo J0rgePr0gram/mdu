@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Bases de datos
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+
+# Credenciales
+credentials.json
+token.json
+.env
+
+# Docker
+data/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
