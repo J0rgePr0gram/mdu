@@ -5,10 +5,10 @@ import logging
 
 from app.repositories.booking_repository import get_booking, update_booking
 from app.repositories.service_repository import get_service
-from app.calendar.mock_provider import MockCalendarProvider
+from app.calendar.google_provider import GoogleCalendarProvider
 
 logger = logging.getLogger(__name__)
-calendar_provider = MockCalendarProvider()
+calendar_provider = GoogleCalendarProvider()
 
 def reschedule_appointment(
     db: Session,

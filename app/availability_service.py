@@ -1,7 +1,7 @@
 from datetime import date, datetime  # Agregar datetime
 from fastapi import HTTPException  # Agregar HTTPException
 
-from app.calendar.mock_provider import MockCalendarProvider
+from app.calendar.google_provider import GoogleCalendarProvider
 from app.engine import find_available_slots_for_resource
 from app.models import (
     Resource,
@@ -10,7 +10,7 @@ from app.models import (
     Workday,
 )
 
-calendar_provider = MockCalendarProvider()
+calendar_provider = GoogleCalendarProvider()
 
 
 def get_available_slots(

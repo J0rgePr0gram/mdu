@@ -3,11 +3,11 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from googleapiclient.errors import HttpError
 
-from app.calendar.mock_provider import MockCalendarProvider
+from app.calendar.google_provider import GoogleCalendarProvider
 from app.repositories.booking_repository import get_booking, cancel_booking
 
 logger = logging.getLogger(__name__)
-calendar_provider = MockCalendarProvider()
+calendar_provider = GoogleCalendarProvider()
 
 
 def cancel_appointment(

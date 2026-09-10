@@ -1,10 +1,11 @@
-from datetime import datetime
+from datetime import datetime, timedelta, date
 from zoneinfo import ZoneInfo
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 from app.google_auth import get_credentials
+from app.models import CalendarEvent
 
 from app.calendar.provider import CalendarProvider
 
@@ -47,6 +48,91 @@ class GoogleCalendarProvider(
             "v3",
             credentials=creds,
         )
+
+    def get_events(
+        self,
+        calendar_id: str,
+        target_date: date | None = None,
+    ) -> list[CalendarEvent]:
+        """
+        Obtiene los eventos ocupados de un calendario específico
+        para una fecha determinada.
+        """
+
+        chile_tz = ZoneInfo(
+            CHILE_TIMEZONE
+        )
+
+        service = (
+            self._get_calendar_service()
+        )
+
+        if target_date is None:
+            target_date = datetime.now(
+                chile_tz
+            ).date()
+
+        start_of_day = datetime.combine(
+            target_date,
+            datetime.min.time(),
+            tzinfo=chile_tz,
+        )
+
+        end_of_day = (
+            start_of_day
+            + timedelta(days=1)
+        )
+
+        events_result = (
+            service.events()
+            .list(
+                calendarId=calendar_id,
+                timeMin=start_of_day.isoformat(),
+                timeMax=end_of_day.isoformat(),
+                singleEvents=True,
+                orderBy="startTime",
+            )
+            .execute()
+        )
+
+        google_events = events_result.get(
+            "items",
+            []
+        )
+
+        events = []
+
+        for event in google_events:
+
+            if "dateTime" not in event["start"]:
+                continue
+
+            start_dt = datetime.fromisoformat(
+                event["start"]["dateTime"]
+            )
+
+            end_dt = datetime.fromisoformat(
+                event["end"]["dateTime"]
+            )
+
+            start_minutes = (
+                start_dt.hour * 60
+                + start_dt.minute
+            )
+
+            end_minutes = (
+                end_dt.hour * 60
+                + end_dt.minute
+            )
+
+            events.append(
+                CalendarEvent(
+                    start=start_minutes,
+                    end=end_minutes,
+                )
+            )
+
+        return events
 
     def slot_is_available(
         self,
