@@ -1,7 +1,7 @@
 from datetime import date, datetime  # Agregar datetime
 from fastapi import HTTPException  # Agregar HTTPException
 
-from app.calendar_provider import get_events
+from app.calendar.mock_provider import MockCalendarProvider
 from app.engine import find_available_slots_for_resource
 from app.models import (
     Resource,
@@ -9,6 +9,8 @@ from app.models import (
     Service,
     Workday,
 )
+
+calendar_provider = MockCalendarProvider()
 
 
 def get_available_slots(
@@ -49,7 +51,7 @@ def get_available_slots(
     # 2. Obtener los eventos ocupados del calendario
     # --------------------------------------------------------
 
-    events = get_events(
+    events = calendar_provider.get_events(
         calendar_id=calendar.external_id,
         target_date=target_date,
     )

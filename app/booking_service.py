@@ -6,10 +6,10 @@ import logging
 
 from app.models import Booking, Service, Resource, Calendar
 from app.repositories.booking_repository import save_booking
-from app.calendar.google_provider import GoogleCalendarProvider
+from app.calendar.mock_provider import MockCalendarProvider
 
 logger = logging.getLogger(__name__)
-calendar_provider = GoogleCalendarProvider()
+calendar_provider = MockCalendarProvider()
 
 
 def book_appointment(

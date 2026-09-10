@@ -5,10 +5,10 @@ import logging
 
 from app.repositories.booking_repository import get_booking, update_booking
 from app.repositories.service_repository import get_service
-from app.calendar.google_provider import GoogleCalendarProvider
+from app.calendar.mock_provider import MockCalendarProvider
 
 logger = logging.getLogger(__name__)
-
+calendar_provider = MockCalendarProvider()
 
 def reschedule_appointment(
     db: Session,
@@ -40,7 +40,6 @@ def reschedule_appointment(
     logger.info(f"Nuevo horario: {start_datetime} - {end_datetime}")
     
     # 3. Validar disponibilidad en Google Calendar (excluyendo el evento actual)
-    calendar_provider = GoogleCalendarProvider()
     available = calendar_provider.slot_is_available(
         calendar_id=booking.calendar_id,
         start_datetime=start_datetime,

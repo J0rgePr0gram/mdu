@@ -3,11 +3,11 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from googleapiclient.errors import HttpError
 
-from app.calendar.google_provider import GoogleCalendarProvider
+from app.calendar.mock_provider import MockCalendarProvider
 from app.repositories.booking_repository import get_booking, cancel_booking
 
 logger = logging.getLogger(__name__)
-calendar_provider = GoogleCalendarProvider()
+calendar_provider = MockCalendarProvider()
 
 
 def cancel_appointment(
@@ -29,7 +29,6 @@ def cancel_appointment(
     
     # 2. Eliminar evento de Google Calendar
     try:
-        calendar_provider = GoogleCalendarProvider()
         calendar_provider.delete_event(booking.calendar_id, booking.event_id)
         logger.info(f"Evento {booking.event_id} eliminado de Google Calendar")
     except Exception as e:

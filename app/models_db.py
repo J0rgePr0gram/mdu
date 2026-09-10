@@ -54,3 +54,66 @@ class BookingDB(Base):
         nullable=False,
         default="active",
     )
+
+
+class ResourceDB(Base):
+    __tablename__ = "resources"
+
+    id: Mapped[int] = mapped_column(
+        Integer,
+        primary_key=True,
+    )
+
+    name: Mapped[str] = mapped_column(
+        String,
+        nullable=False,
+    )
+
+    resource_type: Mapped[str] = mapped_column(
+        String,
+        nullable=False,
+    )
+
+
+class ServiceDB(Base):
+    __tablename__ = "services"
+
+    id: Mapped[int] = mapped_column(
+        Integer,
+        primary_key=True,
+    )
+
+    name: Mapped[str] = mapped_column(
+        String,
+        nullable=False,
+        unique=True,
+    )
+
+    duration: Mapped[int] = mapped_column(
+        Integer,
+        nullable=False,
+    )
+
+
+class CalendarDB(Base):
+    __tablename__ = "calendars"
+
+    id: Mapped[int] = mapped_column(
+        Integer,
+        primary_key=True,
+    )
+
+    resource_id: Mapped[int] = mapped_column(
+        Integer,
+        nullable=False,
+    )
+
+    provider: Mapped[str] = mapped_column(
+        String,
+        nullable=False,
+    )
+
+    external_id: Mapped[str] = mapped_column(
+        String,
+        nullable=False,
+    )

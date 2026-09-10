@@ -8,9 +8,7 @@ services:
       - "8000:8000"
     volumes:
       - ./data:/app/data
-      - ./credentials.json:/app/credentials.json:ro
-      - ./token.json:/app/token.json:rw
-      - ./mdu.log:/app/mdu.log
+      - ./logs:/app/logs
     environment:
       - DATABASE_URL=sqlite:///./data/bookings.db
       - LOG_LEVEL=INFO
