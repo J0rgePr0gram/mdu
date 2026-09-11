@@ -5,7 +5,7 @@ from app.models import (
     AvailableSlot,
 )
 
-from app.engine import find_available_slots_for_service
+from app.engine import find_available_slots_for_resource
 
 
 @patch("app.engine.find_available_slots")
@@ -15,10 +15,9 @@ def test_engine_builds_request_and_calls_scheduler(
     service,
 ):
     """
-    The engine should build the reservation request
-    and delegate scheduling.
+    El engine debe construir la solicitud de reserva
+    y delegar la planificación al scheduler.
     """
-
     mock_scheduler.return_value = [
         AvailableSlot(
             start=540,
@@ -33,16 +32,15 @@ def test_engine_builds_request_and_calls_scheduler(
         )
     ]
 
-    available_slots = find_available_slots_for_service(
+    available_slots = find_available_slots_for_resource(
+        resource=None,
         service=service,
         workday=workday,
         events=events,
     )
 
     assert available_slots[0].start == 540
-
     mock_scheduler.assert_called_once()
 
     called_request = mock_scheduler.call_args.kwargs["request"]
-
     assert called_request.duration == 45
