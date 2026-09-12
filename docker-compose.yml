@@ -12,6 +12,7 @@ services:
     environment:
       - DATABASE_URL=sqlite:///./data/bookings.db
       - LOG_LEVEL=INFO
+      - API_KEY=mdu-secret-key-2026
     env_file:
       - .env
     restart: unless-stopped

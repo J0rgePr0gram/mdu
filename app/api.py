@@ -1,29 +1,33 @@
 from datetime import datetime, date, time
-from fastapi import APIRouter, HTTPException, Depends  # Cambiar: FastAPI -> APIRouter
+from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
-from app.database import get_db  # Eliminar Base, engine (ya están en main.py)
+
+from app.database import get_db
 from app.models_db import BookingDB
+
 from app.availability_service import get_available_slots
 from app.booking_service import book_appointment
 from app.reschedule_service import reschedule_appointment
+
 from app.repositories.resource_repository import get_resource
 from app.repositories.service_repository import get_service
 from app.repositories.calendar_repository import get_calendar_for_resource
-from app.cancellation_service import cancel_appointment
 from app.repositories.booking_repository import get_booking
 
+from app.cancellation_service import cancel_appointment
+from app.auth import verify_api_key
 
 
 # ============================================================
-# CREAR EL ROUTER (en lugar de app)
+# CREAR EL ROUTER
 # ============================================================
 
-router = APIRouter()  # <--- NUEVO
+router = APIRouter()
 
 
 # ============================================================
-# MODELO DE RESERVA
+# MODELOS DE REQUEST
 # ============================================================
 
 class BookingRequest(BaseModel):
@@ -32,6 +36,7 @@ class BookingRequest(BaseModel):
     resource_id: int
     date: date
     start_time: time
+
 
 class RescheduleRequest(BaseModel):
     date: date
@@ -42,7 +47,7 @@ class RescheduleRequest(BaseModel):
 # RUTA PRINCIPAL
 # ============================================================
 
-@router.get("/")  # Cambiado: @app -> @router
+@router.get("/")
 def root():
     return {
         "message": "MDU Scheduler API"
@@ -53,7 +58,7 @@ def root():
 # DISPONIBILIDAD
 # ============================================================
 
-@router.get("/available-slots")  # Cambiado: @app -> @router
+@router.get("/available-slots", dependencies=[Depends(verify_api_key)])
 def available_slots(
     resource_id: int,
     service_name: str,
@@ -95,7 +100,7 @@ def available_slots(
 # CREAR RESERVA
 # ============================================================
 
-@router.post("/book")  # Cambiado: @app -> @router
+@router.post("/book", dependencies=[Depends(verify_api_key)])
 def book(
     request: BookingRequest,
     db: Session = Depends(get_db),
@@ -135,7 +140,7 @@ def book(
 # OBTENER RESERVA
 # ============================================================
 
-@router.get("/booking/{booking_id}")  # Cambiado: @app -> @router
+@router.get("/booking/{booking_id}", dependencies=[Depends(verify_api_key)])
 def get_booking_endpoint(
     booking_id: str,
     db: Session = Depends(get_db),
@@ -154,7 +159,7 @@ def get_booking_endpoint(
 # CANCELAR RESERVA
 # ============================================================
 
-@router.delete("/booking/{booking_id}")  # Cambiado: @app -> @router
+@router.delete("/booking/{booking_id}", dependencies=[Depends(verify_api_key)])
 def cancel_booking_endpoint(
     booking_id: str,
     db: Session = Depends(get_db),
@@ -183,7 +188,7 @@ def cancel_booking_endpoint(
 # REAGENDAR RESERVA
 # ============================================================
 
-@router.patch("/booking/{booking_id}")  # Cambiado: @app -> @router
+@router.patch("/booking/{booking_id}", dependencies=[Depends(verify_api_key)])
 def reschedule_booking_endpoint(
     booking_id: str,
     request: RescheduleRequest,
