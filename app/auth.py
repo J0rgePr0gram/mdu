@@ -1,9 +1,20 @@
 import os
+
+from dotenv import load_dotenv
 from fastapi import Security, HTTPException, status
 from fastapi.security import APIKeyHeader
 
+# Cargar variables de entorno
+load_dotenv()
+
 API_KEY_NAME = "X-API-Key"
-API_KEY = os.getenv("API_KEY", "mdu-dev-key-2026")
+API_KEY = os.getenv("API_KEY")
+
+if not API_KEY:
+    raise RuntimeError(
+        "La variable de entorno API_KEY no está definida. "
+        "Configúrala (por ejemplo en tu archivo .env) antes de arrancar el servidor."
+    )
 
 api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
 

@@ -1,3 +1,10 @@
+import os
+
+# La aplicación exige la variable de entorno API_KEY al importarse.
+# Definimos una API Key determinista para los tests antes de importar
+# cualquier módulo de la aplicación.
+os.environ["API_KEY"] = "test-api-key"
+
 import pytest
 from datetime import datetime
 from sqlalchemy import create_engine

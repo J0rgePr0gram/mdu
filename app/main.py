@@ -24,11 +24,19 @@ logger = logging.getLogger(__name__)
 # Crear tablas
 Base.metadata.create_all(bind=engine)
 
+# Determinar el entorno de ejecución
+ENV = os.getenv("ENV", "").lower()
+IS_PRODUCTION = ENV == "production"
+
 # Crear aplicación FastAPI
+# En producción deshabilitamos la documentación interactiva.
 app = FastAPI(
     title="MDU - Motor de Disponibilidad Universal",
     description="API para gestión de disponibilidad y reservas",
     version="1.0.0",
+    docs_url=None if IS_PRODUCTION else "/docs",
+    redoc_url=None if IS_PRODUCTION else "/redoc",
+    openapi_url=None if IS_PRODUCTION else "/openapi.json",
 )
 
 # Registrar rutas

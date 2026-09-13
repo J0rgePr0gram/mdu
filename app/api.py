@@ -47,7 +47,7 @@ class RescheduleRequest(BaseModel):
 # RUTA PRINCIPAL
 # ============================================================
 
-@router.get("/")
+@router.get("/", dependencies=[Depends(verify_api_key)])
 def root():
     return {
         "message": "MDU Scheduler API"
